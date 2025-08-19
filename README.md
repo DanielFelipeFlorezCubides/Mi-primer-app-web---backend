@@ -1,237 +1,264 @@
-# Mi primer app web (backend + frontend)
+# 📘 Documentación del Backend — API de Productos
 
-#### Objetivo
+## 🚀 Descripción
 
-El propósito de este taller es  desarrollar una aplicación Full Stack sencilla con Node.js (Express)para el backend y un frontend que consuma la API creada.
+Este backend está desarrollado con **Node.js + Express** y **MongoDB** (driver oficial).
+Permite administrar productos de tipo **juego** o **consola** con operaciones **CRUD** (crear, leer, actualizar y eliminar).
 
-El backend debe seguir buenas prácticas como modularización, uso de variables de entorno, validaciones con express-validator, manejo de CORS y persistencia de datos enMongoDB.
+------
 
-El frontend debe permitir al usuario interactuar con todas las funcionalidades implementadas en el backend.
+## 📂 Estructura del proyecto
 
-⚠️ Deben investigar y solucionar el problema de CORS para que el frontend pueda comunicarse con el backend.
+```
+Mi-primer-app-web---backend/
+│── app.js                 # Punto de entrada
+│── package.json
+│── .env                   # Variables de entorno
+│
+├── db/
+│   ├── config.js           # Conexión a MongoDB
+│   └── dataset.js          # Script para poblar la base de datos
+│
+├── controllers/
+│   └── product.controller.js   # Lógica de negocio
+│
+├── routers/
+│   └── product.routes.js       # Definición de endpoints
+│
+├── middlewares/
+│   └── validate-fields.js      # Validación de campos
+```
 
-El proyecto debe incluir buenas prácticas:
+------
 
-Variables de entorno (dotenv).
+## ⚙️ Instalación y configuración
 
-Modularización del código (separar rutas, controladores, middlewares, etc.).
+### 1️⃣ Clonar el repositorio
 
-Validaciones con express-validator.
+```
+git clone <url-del-repo>
+cd Mi-primer-app-web---backend
+```
 
-Documentación clara en el README.
+### 2️⃣ Instalar dependencias
 
-Video explicativo con todos los miembros mostrando el funcionamiento.
+```
+npm install
+```
 
-### Temáticas (Escoger UNA de las siguientes)
+### 3️⃣ Configurar variables de entorno
 
-#### 1. Gestión de Reservas de Canchas Deportivas
+Crear un archivo `.env` en la raíz con el siguiente contenido:
 
-Contexto:
+```
+DB_URI=mongodb://localhost:27017
+DB_NAME=videogames_store
+PORT=3000
+```
+
+### 4️⃣ Poblar la base de datos (dataset inicial)
 
-Un complejo deportivo quiere que sus clientes puedan reservar canchas de fútbol, baloncesto o tenis para horarios específicos.
+```
+npm test
+```
 
-Requerimientos mínimos:
+Esto ejecuta `db/dataset.js` y crea una colección `products` con datos de ejemplo.
 
-Registrar canchas disponibles con: 
+### 5️⃣ Ejecutar el servidor
 
-nombre
+```
+npm start
+```
 
-, 
+El servidor corre en:
+👉 `http://localhost:3000/api/products`
 
-tipo
+------
 
- (fútbol, baloncesto, tenis), 
+## 📑 Documentación de Endpoints
 
-precioPorHora
+Todos los endpoints devuelven respuestas en formato **JSON**.
+La API gestiona su propio campo `id` (numérico, autoincremental), distinto del `_id` generado por MongoDB.
 
-.
+------
 
-Registrar reservas indicando: 
+### ➕ Crear un producto
 
-fecha
+**POST** `/api/products`
 
-, 
+#### Request (Body JSON)
 
-horaInicio
+```
+{
+  "nombre": "PlayStation 5 Slim",
+  "tipo": "consola",
+  "precio": 2200,
+  "cantidad": 8
+}
+```
 
-, 
+#### Validaciones
 
-horaFin
+- `nombre` → obligatorio, no vacío
+- `tipo` → debe ser `"juego"` o `"consola"`
+- `precio` → número mayor a 0
+- `cantidad` → entero mayor o igual a 0
+
+#### Response 201 (Created)
+
+```
+{
+  "message": "Producto creado con éxito",
+  "product": {
+    "id": 7,
+    "nombre": "PlayStation 5 Slim",
+    "tipo": "consola",
+    "precio": 2200,
+    "cantidad": 8,
+    "createdAt": "2025-08-19T13:20:52.546Z"
+  }
+}
+```
 
-, 
+#### Response 400 (Validación fallida)
 
-idCancha
+```
+{
+  "errors": [
+    { "msg": "El tipo debe ser 'juego' o 'consola'", "param": "tipo", "location": "body" }
+  ]
+}
+```
 
-, 
+------
 
-nombreCliente
+### 📋 Listar todos los productos
 
-.
+**GET** `/api/products`
 
-Validación: No permitir reservas que se crucen para la misma cancha.
+#### Response 200
 
-Frontend:
+```
+[
+  {
+    "id": 1,
+    "nombre": "The Legend of Zelda: Tears of the Kingdom",
+    "tipo": "juego",
+    "precio": 70,
+    "cantidad": 15
+  },
+  {
+    "id": 2,
+    "nombre": "PlayStation 5",
+    "tipo": "consola",
+    "precio": 499,
+    "cantidad": 8
+  }
+]
+```
 
-Listar canchas disponibles.
+------
 
-Mostrar disponibilidad en una fecha.
+### 🔎 Obtener un producto por ID
 
-Permitir crear una reserva.
+**GET** `/api/products/:id`
 
-#### 2. Control de Inventario de Tienda de Videojuegos
+#### Ejemplo
 
-Contexto:
+```
+GET http://localhost:3000/api/products/2
+```
 
-Una tienda de videojuegos físicos y consolas necesita gestionar su inventario y ventas.
+#### Response 200
 
-Requerimientos mínimos:
+```
+{
+  "id": 2,
+  "nombre": "PlayStation 5",
+  "tipo": "consola",
+  "precio": 499,
+  "cantidad": 8
+}
+```
 
-Registrar productos con: 
+#### Response 404
 
-nombre
+```
+{ "message": "Producto no encontrado" }
+```
 
-, 
+------
 
-tipo
+### ✏️ Actualizar un producto
 
- (juego o consola), 
+**PUT** `/api/products/:id`
 
-precio
+#### Ejemplo
 
-, 
+```
+PUT http://localhost:3000/api/products/6
+```
 
-cantidad
+#### Request (Body JSON)
 
-.
+```
+{
+  "precio": 2100,
+  "cantidad": 5
+}
+```
 
-Registrar ventas:
+> ⚠️ Los campos son opcionales, pero si se envían deben cumplir validación.
 
-Seleccionar producto.
+#### Response 200
 
-Descontar stock automáticamente.
+```
+{ "message": "Producto actualizado con éxito" }
+```
 
-Validación: No permitir ventas con stock insuficiente.
+#### Response 404
 
-Frontend:
+```
+{ "message": "Producto no encontrado" }
+```
 
-Listar catálogo de productos.
+------
 
-Simular una compra.
+### 🗑️ Eliminar un producto
 
-Mostrar mensaje si no hay stock.
+**DELETE** `/api/products/:id`
 
-#### 3. Gestión de Tareas Colaborativas
+#### Ejemplo
 
-Contexto:
+```
+DELETE http://localhost:3000/api/products/6
+```
 
-Una herramienta para que pequeños equipos gestionen tareas y asignen responsables.
+#### Response 200
 
-Requerimientos mínimos:
+```
+{ "message": "Producto eliminado con éxito" }
+```
 
-Crear tareas con: 
+#### Response 404
 
-titulo
+```
+{ "message": "Producto no encontrado" }
+```
 
-, 
+------
 
-descripcion
+## ⚠️ Errores comunes
 
-, 
+- `404 Producto no encontrado` → El `id` no existe en la colección.
+- `400 Validación fallida` → Algún campo no cumple con las reglas (`express-validator`).
+- `500 Error en el servidor` → Error inesperado (ej. DB no conectada).
 
-fechaLimite
+------
 
-, 
+## 🔧 Notas técnicas
 
-responsable
-
-.
-
-Cambiar estado: 
-
-pendiente
-
-, 
-
-en progreso
-
-, 
-
-completada
-
-.
-
-Frontend:
-
-Mostrar tablero de tareas.
-
-Filtrar por estado.
-
-Permitir cambiar estado de una tarea.
-
-### Especificaciones técnicas obligatorias
-
-Backend (Node.js + Express)
-
-Debe estar desarrollado en Node.js con Express.
-
-Uso de MongoDB como base de datos.
-
-Uso de variables de entorno para credenciales y configuración (archivo 
-
-.env
-
-).
-
-Modularización del código (separar rutas, controladores, modelos y configuración).
-
-Validaciones en las rutas usando express-validator.
-
-Manejo adecuado de errores y envío de respuestas con los códigos HTTP correctos.
-
-Configuración de CORS para permitir la conexión desde el frontend.
-
-Documentación en el README con:
-
-Explicación del proyecto.
-
-Requerimientos de instalación.
-
-Variables de entorno necesarias.
-
-Ejemplos de endpoints y cómo probarlos.
-
-Link al repositorio del frontend.
-
-Frontend
-
-Puede realizarse en React, Vue, Angular o cualquier framework/librería que conozcan.
-
-Debe consumir todos los endpoints creados en el backend.
-
-Interfaz amigable para realizar todas las operaciones (crear, leer, actualizar, eliminar).
-
-Mostrar mensajes de validación o error provenientes del backend.
-
-Repositorio separado del backend.
-
-Documentación (README del backend)
-
-Descripción del proyecto y temática elegida.
-
-Tecnologías usadas.
-
-Pasos para instalar y ejecutar.
-
-Ejemplos de endpoints y cómo consumirlos.
-
-Link al repositorio del frontend.
-
-Video de entrega
-
-Duración máxima: 10 minutos.
-
-Deben aparecer todos los integrantes en cámara.
-
-Mostrar brevemente el código del backend.
-
-Mostrar el funcionamiento completo del frontend.
+- **IDs autoincrementales**: Se calculan al insertar un nuevo producto (buscando el último y sumando 1).
+- **Validaciones**: Se usan middlewares de `express-validator` + `validate-fields.js`.
+- **CORS**: Está habilitado globalmente (`app.use(cors())`).
+- **Respuestas**: Siempre en JSON con mensajes claros y status HTTP adecuados (`200`, `201`, `400`, `404`, `500`).
