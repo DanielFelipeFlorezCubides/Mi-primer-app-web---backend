@@ -13,6 +13,10 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Middleware
+app.use(cors()); // Permite llamadas desde el frontend
+app.use(express.json()); // Permite enviar/recibir JSON en el body
+
 // Conectar a la base de datos
 connect();
 
@@ -27,10 +31,6 @@ app.listen(PORT, () => {
 // Definición de variables
 const port = process.env.PORT || 5500;
 const mongodbUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/game_store';
-
-// Middleware
-app.use(cors()); // Permite llamadas desde el frontend
-app.use(express.json()); // Permite enviar/recibir JSON en el body
 
 // Conexión a MongoDB
 mongoose.connect(mongodbUri)
