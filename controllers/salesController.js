@@ -1,4 +1,3 @@
-// aqui se importa el modelo care vergaaaaaaaaaaaaaaaaaaaaa
 import Sale from '../models/Sale.js';
 
 // Controlador para crear una venta

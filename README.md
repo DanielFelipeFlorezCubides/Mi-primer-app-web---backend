@@ -1,5 +1,8 @@
+# Video explicativo
+https://youtu.be/kxdOp53fwvw
+
 # Frontend
-https://github.com/Mateo-Paternina-Mercado/videogame-inventory-frontend
+https://github.com/Mateo-Paternina-Mercado/videogame-inventory-frontend/tree/05776e8b77fd46a04398f3f0d1865a0742918776
 
 # 🧑‍🎨 Autores
 ## Backend 
