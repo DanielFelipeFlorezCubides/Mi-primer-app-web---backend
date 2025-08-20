@@ -1,3 +1,14 @@
+# Frontend
+https://github.com/Mateo-Paternina-Mercado/videogame-inventory-frontend
+
+# 🧑‍🎨 Autores
+## Backend 
+- Daniel Felipe Florez Cubides
+- Breyner Fernando Pinto
+------------
+## Frontend 
+- Mateo Paternina Mercado
+
 # 📘 Documentación del Backend — API de Productos
 
 ## 🚀 Descripción
