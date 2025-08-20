@@ -262,3 +262,95 @@ DELETE http://localhost:3000/api/products/6
 - **Validaciones**: Se usan middlewares de `express-validator` + `validate-fields.js`.
 - **CORS**: Está habilitado globalmente (`app.use(cors())`).
 - **Respuestas**: Siempre en JSON con mensajes claros y status HTTP adecuados (`200`, `201`, `400`, `404`, `500`).
+--------------------------
+
+# 📂 Endpoints ventas disponibles
+
+🔹 Base URL
+http://localhost:3000/v1/sales
+
+## 1. Crear una venta
+
+POST /sales
+
+📌 Descripción: Registra una nueva venta y descuenta el stock del producto.
+```json
+✅ Body (JSON requerido):
+{
+  "productId": "64a1b2c3d4e5f6a7b8c9d0e1",
+  "quantity": 2,
+  "customerName": "Juan Pérez"
+}
+```
+🔎 Validaciones:
+
+productId: debe ser un ObjectId válido de MongoDB.
+
+quantity: entero ≥ 1.
+
+customerName: mínimo 2 caracteres.
+```json
+📤 Respuestas:
+
+201 (Created)
+
+{
+  "message": "Venta creada",
+  "sale": {
+    "_id": "64a2b3c4d5e6f7g8h9i0j1k2",
+    "productId": "64a1b2c3d4e5f6a7b8c9d0e1",
+    "quantity": 2,
+    "totalPrice": 50000,
+    "customerName": "Juan Pérez",
+    "createdAt": "2025-08-18T20:15:30.000Z"
+  }
+}
+```
+
+400 (Bad Request) → Errores de validación.
+
+404 (Not Found) → Producto no encontrado.
+
+500 (Server Error) → Error interno.
+
+## 2. Obtener todas las ventas
+
+GET /sales
+
+📌 Descripción: Retorna todas las ventas registradas con información del producto asociado.
+```json
+📤 Respuesta exitosa (200):
+[
+  {
+    "_id": "64a2b3c4d5e6f7g8h9i0j1k2",
+    "productId": { "name": "Camiseta", "price": 25000 },
+    "quantity": 2,
+    "totalPrice": 50000,
+    "customerName": "Juan Pérez",
+    "createdAt": "2025-08-18T20:15:30.000Z"
+  }
+]
+```
+❌ Errores:
+
+500 (Server Error) → Error interno al consultar las ventas.
+
+🛠️ Tecnologías usadas
+
+Node.js + Express → Backend.
+
+MongoDB + Mongoose → Base de datos.
+
+express-validator → Validación de datos.
+
+CORS → Permite conexión con frontend.
+
+dotenv → Variables de entorno.
+
+📌 Notas para el Frontend
+
+Siempre enviar Content-Type: application/json en las peticiones POST.
+
+Manejar mensajes de error devueltos por el backend (400, 404, 500).
+
+El campo createdAt lo genera el backend automáticamente (no enviarlo).

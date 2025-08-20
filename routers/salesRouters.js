@@ -1,7 +1,7 @@
 import express from 'express';
 import { body } from 'express-validator';
 import validateResult from '../middlewares/validate.js';
-import { createProduct, getProducts, createSale, getSales } from '../controllers/salesController.js';
+import { createSale, getSales } from '../controllers/salesController.js';
 
 const router = express.Router();
 
